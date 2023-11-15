@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
 def read_fasta(filename):
-    """ Fonction qui prend en entré un fichier eet renvoie un dicotionnaire, 
-    avec en clef l'identifiant et en valeur la sequence d'acide amine """
     dico ={}
     content=""
     id=""
@@ -12,13 +11,15 @@ def read_fasta(filename):
         if i[0]==">" : 
             if id!="":
                 dico[id]=content
-            id = i.strip('\n') #enleve les retour a la ligne de la clef du dictionnaire.
-            id = id.strip('>') #enleve les cheverons a la ligne de la clef du dictionnaire.
-            content = ""  #reinitialise la chaine.
+            id = i.strip("\n")
+            id = id.strip(">")
+            
+            content = ""  
         else : 
-            content=content+i.strip('\n') #incremente la chaine a chaque retour de ligne.
+            content=content+i.strip('\n')
     dico[id]=content
     return dico
+
 
 seq_pep = read_fasta('test_pep.fasta')
 seq_prot = read_fasta('test_prot.fasta')
@@ -29,17 +30,16 @@ def count_word(seq,word):
         if seq[i] == word[0]:
             if seq[i:(i+len(word))] == word:
                       word_count+=1
-    return word_count
+                      
+    
+    return word_count 
 
 def match_id(peptide,prot_file):
     match_dico = {}
     prot_dico=read_fasta(prot_file)
+    list_match = []
     for prot in prot_dico:
-        n = count_word(prot_dico[prot],peptide)
-        #print(prot_dico[prot],"\n")
-        #print(peptide)
-        #print(n)
-        list_match = []
+        n=count_word(prot_dico[prot],peptide)
         if n > 0 :
             list_match.append(prot_dico[prot])
         if n == 0 :
@@ -51,7 +51,7 @@ def unique_match_set(peptide_file, prot_file):
     #prot_dico = read_fasta(prot_file)
     the_dico = {}
     for peptide in peptide_dico : 
-        match = match_id(peptide_dico[peptide],prot_file) #retourne une liste de prots
+        match = match_id(peptide_dico[peptide],prot_file) #retourne une liste de prot
         for i in range(len(match)): 
             if match[i] in dict.keys(the_dico):
                 the_list = the_dico[match[i]]
@@ -65,14 +65,5 @@ def unique_match_set(peptide_file, prot_file):
             
 a = unique_match_set('small_peptides.fa', 'human_blood_proteome.fa')
 
-
-
-
-
-
-
-
-
-
-
-
+    
+    
