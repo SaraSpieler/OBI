@@ -42,17 +42,24 @@ def match_id(peptide,prot_file):
         n=count_word(prot_dico[prot],peptide)
         if n > 0 :
             list_match.append(prot_dico[prot])
-        if n == 0 :
-            list_match.append('None')
+    if list_match == [] :
+        list_match.append('None')
     return list_match
 
 def unique_match_set(peptide_file, prot_file):
     peptide_dico= read_fasta(peptide_file)
-    #prot_dico = read_fasta(prot_file)
+    prot_dico = read_fasta(prot_file)
     the_dico = {}
     for peptide in peptide_dico : 
         match = match_id(peptide_dico[peptide],prot_file) #retourne une liste de prot
         for i in range(len(match)): 
+            
+            
+            for y ,z  in prot_dico.items(): #WARNING 
+                if z == match[i] :
+                    key = y 
+             ### /!\ Inverser le dico pour avoir l'ID de la prot en clé ###
+            
             if match[i] in dict.keys(the_dico):
                 the_list = the_dico[match[i]]
                 the_list.append(peptide_dico[peptide])
@@ -63,7 +70,4 @@ def unique_match_set(peptide_file, prot_file):
                 the_dico[match[i]]=the_list
     return the_dico
             
-a = unique_match_set('small_peptides.fa', 'human_blood_proteome.fa')
-
-    
-    
+a = unique_match_set('test_pep.fasta', 'test_prot.fasta')
