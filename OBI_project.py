@@ -47,6 +47,7 @@ def match_id(peptide,prot_file):
     return list_match
 
 def unique_match_set(peptide_file, prot_file):
+    key="None"
     peptide_dico= read_fasta(peptide_file)
     prot_dico = read_fasta(prot_file)
     the_dico = {}
@@ -54,20 +55,34 @@ def unique_match_set(peptide_file, prot_file):
         match = match_id(peptide_dico[peptide],prot_file) #retourne une liste de prot
         for i in range(len(match)): 
             
-            
-            for y ,z  in prot_dico.items(): #WARNING 
+            for y ,z  in prot_dico.items(): 
                 if z == match[i] :
                     key = y 
-             ### /!\ Inverser le dico pour avoir l'ID de la prot en clé ###
-            
-            if match[i] in dict.keys(the_dico):
-                the_list = the_dico[match[i]]
+      
+            if key in dict.keys(the_dico):
+                the_list = the_dico[key]
                 the_list.append(peptide_dico[peptide])
-                the_dico[match[i]]=the_list
+                the_dico[key]=the_list
+                key="None"
             else:
                 the_list = []
                 the_list.append(peptide_dico[peptide])
-                the_dico[match[i]]=the_list
-    return the_dico
+                the_dico[key]=the_list
+                key="None"
+    
+    ### Return for at least 2 pep
+    
+        ##Enlever les none 
+        ##Enlever les peptides plusieurs fois représentés 
+            #Chercher le peptide 
+            #On count le peptide et on check si il est présent
+            #Le supprimer de TOUTES les protéines en meme temps
+           
+        ##Enlever les prot avec moins de deux pep
+    
+                    
+                
+    return the_dico #return le dico trier a la fin
+            
             
 a = unique_match_set('test_pep.fasta', 'test_prot.fasta')
