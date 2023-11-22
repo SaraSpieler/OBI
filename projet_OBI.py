@@ -28,8 +28,6 @@ def count_word(seq,word):
         if seq[i] == word[0]:
             if seq[i:(i+len(word))] == word:
                       word_count+=1
-                      
-    
     return word_count 
     
 #match_id(r,fasta_file)
@@ -104,11 +102,6 @@ def unique_match_set(peptide_file, prot_file):
     
     return the_dico #return le dico trier a la fin
                     
-a = unique_match_set('test_peptide.fa', 'test_prot.fa')
-print("\n Dictionnaire : ", a)
-
-
-
 ##    Fonctions d'overlap    ###
 
 #overlap(r1, r2)
@@ -159,6 +152,22 @@ def stack_peptide(first_peptide, second_peptide, overlap):
         stacked_peptide = second_peptide[:-overlap]+first_peptide
     
     return stacked_peptide
+
+#write_fasta(seq_dico,filename)
+def write_fasta(seq_dico,filename):
+    #Fonction pour écrire un fichier fasta a partir d'un dictionnaire
+    
+    #On commence par créer le fichier a modifier
+    new_file = open(filename, 'w')
+    
+    #On parce ce dictionnaire 
+    for key in seq_dico :
+        #On écrit la clée correspondant a l'ID sur une ligne
+        new_file.write((">"+key+'\n'))
+        
+        #On ecrit la séquence sur une autre linge
+        #On ajoute \n tous les 60 lettres pour avoir un fichier lisible (falcutatif) et a la fin
+        new_file.write(('\n'.join(seq_dico[key][i:i+60] for i in range(0, len(seq_dico[key]), 60)))+'\n')
     
 #assembly_peptides(peptide_file, overlap_min)
 def assembely_peptide(pep_file, overlap_min):
@@ -230,5 +239,3 @@ def assembely_peptide(pep_file, overlap_min):
     #Finalement on écrit le dictionnaire dans un fichier            
     write_fasta(stacked_dico, 'stacked_pep.fasta')           
     return stacked_dico
-
-
