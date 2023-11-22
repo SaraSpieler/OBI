@@ -1,3 +1,5 @@
+
+#read_fasta (fasta_file)
 def read_fasta(filename):
     dico ={}
     content=""
@@ -29,7 +31,7 @@ def count_word(seq,word):
                       
     
     return word_count 
-
+#match_id(r,fasta_file)
 def match_id(peptide,prot_file):
     match_dico = {}
     prot_dico=read_fasta(prot_file)
@@ -41,7 +43,8 @@ def match_id(peptide,prot_file):
     if list_match == [] :
         list_match.append('None')
     return list_match
-
+    
+#unique_match_set(peptide_file, db_file)
 def unique_match_set(peptide_file, prot_file):
     key="None"
     peptide_dico= read_fasta(peptide_file)
@@ -92,17 +95,17 @@ def unique_match_set(peptide_file, prot_file):
     #comme si tu cree un nouveau the_dico mais sans None
     print("Avant supressions None : \n", the_dico)
     the_dico = {k: v for k, v in the_dico.items() if k is not 'None'}
-    
-
 
     print("Avant supressions proteine avec moins de deux peptides : \n", the_dico)
     ##ENLEVE PROT AVEC MOINS DE 2 PEPTIDES 
     #pareil grace a la comprehension de dictionnaire.
     the_dico = {k: v for k, v in the_dico.items() if len(v) >= 2}
-
-                
+    
     return the_dico #return le dico trier a la fin
-            
-            
+                    
 a = unique_match_set('test_peptide.fa', 'test_prot.fa')
 print("\n Dictionnaire : ", a)
+
+#overlap(r1, r2)
+
+#assembly_peptides(peptide_file, overlap_min)
