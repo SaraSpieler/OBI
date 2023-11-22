@@ -239,3 +239,7 @@ def assembely_peptide(pep_file, overlap_min):
     #Finalement on écrit le dictionnaire dans un fichier            
     write_fasta(stacked_dico, 'stacked_pep.fasta')           
     return stacked_dico
+
+#assembely_peptide('test_peptide.fa',1)
+#unique_match_set('test_peptide.fa','test_prot.fa')
+
