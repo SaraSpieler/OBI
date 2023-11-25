@@ -18,10 +18,6 @@ def read_fasta(filename):
     dico[id]=content
     return dico
 
-
-seq_pep = read_fasta('test_peptide.fa')
-seq_prot = read_fasta('test_prot.fa')
-
 def count_word(seq,word):
     word_count=0
     for i in range(len(seq)):
@@ -93,7 +89,7 @@ def unique_match_set(peptide_file, prot_file):
     #grace a la une compréhension de dictionnaire, on vas pouvoir enlever les None 
     #comme si tu cree un nouveau the_dico mais sans None
     print("Avant supressions None : \n", the_dico)
-    the_dico = {k: v for k, v in the_dico.items() if k is not 'None'}
+    the_dico = {k: v for k, v in the_dico.items() if k != 'None'}
 
     print("Avant supressions proteine avec moins de deux peptides : \n", the_dico)
     ##ENLEVE PROT AVEC MOINS DE 2 PEPTIDES 
