@@ -28,7 +28,6 @@ def count_word(seq,word):
     
 #match_id(r,fasta_file)
 def match_id(peptide,prot_file):
-    match_dico = {}
     prot_dico=read_fasta(prot_file)
     list_match = []
     for prot in prot_dico:
