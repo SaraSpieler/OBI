@@ -1,6 +1,17 @@
 
 #read_fasta (fasta_file)
 def read_fasta(filename):
+    """ A partir d'un document fasta, cree un dictionnaire qui prend en : 
+            - clef =  id (de la proteine ou du peptide) 
+            - valeur = la sequence (proteique/peptidiques) 
+
+        >>> seq_pep = read_fasta('test_peptide.fa')
+        >>> print(seq_pep)
+        {'PAp00000001': 'BAPTOUAAHEEICTTNEGVMYR', 'PAp00000004': 'ALPGEQQPLHALTRBAPTOU', 'PAp00000006': 'CDPHEATCYDDGK', 'PAp00000008': 'CHAANPNGRNO', 'PAp00000009': 'NOCHAGHLNGVYYQGGTYSK', 'PAp00000010': 'LOLCHEGGQSYK', 'PAp00000011': 'LOLCLPDRETAASLLQAGYK', 'PAp00000014': 'PTDRDFFLANASR', 'PAp00000015': 'DKLAACLEGNCAEGLGTNYRPTDR', 'PAp00000018': 'EHAVEGDCDFQLLK', 'PAp00000019': 'BONJOURCOEURHELLO', 'PAp00000020': 'OUIBONJOUR', 'PAp00000021': 'HELLOYES', 'PAp00000022': 'YESITWORK', 'PAp00000023': 'SASLESVR', 'PAp00000024': 'MKVKNEDSL', 'PAp00000025': 'QGIPFFGQ', 'PAp00000026': 'MESKGASS', 'PAp00000027': 'PDGSPV', 'PAp00000028': 'HELLOWORLD', 'PAp00000029': 'IMBACKAGAIN', 'PAp00000030': 'SCARYMOVIE'}
+        >>> seq_prot = read_fasta('test_prot.fa')
+        >>> print(seq_prot)
+        {'sp|P04217|A1BG_HUMAN Alpha-1B-glycoprotein OS=Homo sapiens OX=9606 GN=A1BG PE=1 SV=4': 'MSMLVVFLLLWGVTWGPVTEAAIFYETQPSLWAESESLLKPLANVTLTCQAHLETPDFQLFKNGVAQEPVHLDSPAIKHQFLLTGDTQGRYRCRSGLSTGWTQLSKLLELTGPKSLPAPWLSMAPVSWITPGLKTTAVCRGVLRGVTFLLRREGDHEFLEVPEAQEDVEATFPVHQPGNYSCSYRTDGEGALSEPSATVTIEEAAHEEICTTNEGVMYRLAAPPPPVLMHHGESSQVLHPGNKVTLTCVAPLSGVDFQLRRGEKELLVPRSSTSPDRIFFHLNAVALGDGGHYTCRYRLHDNQNGWSGDSAPVELILSDETLPAPEFSPEPESGRALRLRCLAPLEGARFALVREDRGGRRVHRFQSPAGTEALFELHNISVADSANYSCVYVDLKPPFGGSAPSERLELHVDGPPPRPQLRATWSGAVLAGRDAVLRCEGPIPDVTFELLREGETKAVKTVRTPGAAANLELIFVGPQHAGNYRCRYRSWVPHTFESELSDPVELLVAES', 'sp|P01023|A2MG_HUMAN Alpha-2-macroglobulin OS=Homo sapiens OX=9606 GN=A2M PE=1 SV=3': 'MGKNKLLHPSLVLLLLVLLPTDASVSGKPQYMVLVPSLLHTETTEKGCVLLSYLNETVTVSASLESVRGNRSLFTDLEAENDVLHCVAFAVPKSSSNEEVMFLTVQVKGPTQEFKKRTTVMVKNEDSLVFVQTDKSIYKPGQTVKFRVVSMDENFHPLNELIPLVYIQDPKGNRIAQWQSFQLEGGLKQFSFPLSSEPFQGSYKVVVQKAAHEEICTTNEGVMYRKSGGRTEHPFTVEEFVLPKFEVQVTVPKIITILEEEMNVSVCGLYTYGKPVPGHVTVSICRKYSDASDCHGEDSQAFCEKFSGQLNSHGCFYQQVKTKVFQLKRKEYEMKLHTEAQIQEEGTVVELTGRQSSEITRTITKLSFVKVDSHFRQGIPFFGQVRLVDGKGVPIPNKVIFIRGNEANYYSNATTDEHGLVQFSINTTNVMGTSLT', 'sp|Q6UXT9|ABH15_HUMAN Protein ABHD15 OS=Homo sapiens OX=9606 GN=ABHD15 PE=1 SV=2': 'MPPWGAALALILAVLALLGLLGPRLRGPWGRAVGERTLPGAQDRDDGEEADGGGPADQFSDGREPLPGGCSLVCKPSALAQCLLRALRRSEALEAGPRSWFSGPHLQTLCHFVLPVAPGP', 'sp|Q13740|CD166_HUMAN CD166 antigen OS=Homo sapiens OX=9606 GN=ALCAM PE=1 SV=2': 'MESKGASSCRLLFCLLISATVFRPGLGWYTVNSAYGDTIIIPCRLDVPQNLMFGKWKYEKPDGSPVFIAFRSSTKKSVQYDDCHAANPNGRVPEYKDRLNLSENYTLSISNARISDEKRFVCMLVTEDNVFEAPTIVKVFKQPSKPEIVSKALFLETEQLKKLGDCISEDSYPDGNITWYRNGKVLHPLEGAVVIIFKKEMDPVTQLYTMTSTLEYKTTKADIQMPFTCSVTYYGPSGQKTIHSEQAVFDIYYPTEQVTIQVLPPKNAIKEGDAAHEEICTTNEGVMYRNITLKCLGNGNPPPEEFLFYLPGQPEGIRSSNTYTLTDVRRNATGDYKCSLIDKKSMIASTAITVHYLDLSLNPSGEVTRQIGDALPVSCTISASRNATVVWMKDNIRLRSSPSFSSLHYQDAGNYVCETALQEVEGLKKRESLTLIVEGKPQIKMTKKTDPSGLSKTIICHVEGFPKPAIQWTITGSGSVINQTEESPYINGRYYSKIIISPEENVTLTCTAENQLERTVNSLNVSAISIPEHDEADEISDENREKVNDQAKLIVGIVVGLLLAALVAGVVYWLYMKKSKTASKHVNKDLGNMEENKKLEENNHKTEAHELLOWORLDAZEAAZ', 'sp|Q6UXT8|ALKL1_HUMAN ALK and LTK ligand 1 OS=Homo sapiens OX=9606 GN=ALKAL1 PE=1 SV=1': 'MRPLKPGAPLPALFLLALALSPHGAHGRPRGRRGARVTDKEPKPLLFLPAAGAGRTPSGSRSAEIFPRDSNLKDKFIKHFTGPVTCHAANPNGRFSPECSKHFHRLYYNTRECSTPAYYKRCARLLTRLAVSPLCSQTHELLOWORLDAZEAZEAAZEAIMBACKAGAINAZEAZEIMBACKAGAINAZ', 'sp|Q6UX46|ALKL2_HUMAN ALK and LTK ligand 2 OS=Homo sapiens OX=9606 GN=ALKAL2 PE=1 SV=2': 'MRGPGHPLLLGLLLVLGAAGRGRGGAEPREPADGQALLRLVVELVQELRKHHSAEHKGLQLLGRDCALGRAEAAGLGPSPECLPDRETAASLLQAGYKQRVEIVPRDLRMKDKFLKHLTGPLYFSPKCSKHFHRLYHNTRDCTIPAYYKRCARLLTRLAVSPVCMEDKQ', 'sp|Q15389|ANGP1_HUMAN Angiopoietin-1 OS=Homo sapiens OX=9606 GN=ANGPT1 PE=1 SV=2': 'MTVFLSFAFLAAILTHIGCSNQRRSPENSGRRYNRIQHGQCAYTFILPEHDGNCRESTTDQYNTNALQRDAPHVEPDFSSQKLQHLEHVMENYTQWLQKLENYIVENMKSEMAQIQQNAVQNHTATMLEIGTSLLSQTAEQTRKLTDVETQVLNQTSRLEIQLLENSLSTYKLEKQLLQQTNEILKIHEKNSLLEHKILEMEGKHKEELDTLKEEKENLQGLVTRQTYIIQELEKQLNRATTNNSVLQKQQLELMDTVHNLVNLCTKEGVLLKGGKREEEKPFRDCADVYQAGFNKSGIYTIYINNMPEPKKVFCNMDVNGGGWTVIEHAVEGDCDFQLLKQHREDGSLDFQRGWKEYKMGFGNPSGEYWLGNEFIFAITSQRQYMLRIELMDWEGNRAYSQYDRFHIGNEKQNYRLYLKGHTGTAGKQSSLILHGADFSTKDADNDNCMCKCALMLTGGWWFDACGPSNLNGMFYTAGQNHGKLNGIKWHYFKGPSYSLRSTTMMIRPLDFSCARYMOVIEAZEAZEAZEAZ', 'sp|O15123|ANGP2_HUMAN Angiopoietin-2 OS=Homo sapiens OX=9606 GN=ANGPT2 PE=1 SV=1': 'MWQIVFFTLSCDLVLAAAYNNFRKSMDSIGKKQYQVQHGSCSYTFLLPEMDNCRSSSSPYVSNAVQRDAPLEYDDSVQRLQVLENIMENNTQWLMKLENYIQDNMKKEMVEIQQNAVQNQTAVMIEIGTNLLNQTAEQTRKLTDVEAQVLNQTTRLELQLLEHSLSTNKLEKQILDQTSEINKLQDKNSFLEKKVLAMEDKHIIQLQSIKEEKDQLQVLVSKQNSIIEELEKKIVTATVNNSVLQKQQHDLMETVNNLLTMMSTSNSAKDPTVAKEEQISFRDCAEVFKSGHTTNGIYTLTFPNSTEEIKAYCDMEAGGGGWTIIQRREDGSVDFQRTWKEYKVGFGNPSGEYWLGNEFVSQLTNQQRYVLKIHLKDWEGNEAYEHAVEGDCDFQLLKSLYEHFYLSSEELNYRIHLKGLTGTAGKISSISQPGNDFSTKDGDNDKCICKCSQMLTGGWWFDACGPSNLNGMYYPQRQNTNKFNGIKWYYWKGSGYSLKATTMMIRPADF'}
+         """
     dico ={}
     content=""
     id=""
@@ -18,16 +29,40 @@ def read_fasta(filename):
     dico[id]=content
     return dico
 
+
+#match_id(r,fasta_file)
 def count_word(seq,word):
+    """ A partir d'une sequence et d'un mot, la fonction compte le nombre de fois qu'apparait ce mot 
+
+    >>> seq="ffgiaerilegycvueogyhceauirgyfgiaeriufgiaeriuyrfghvcburogfgiaeriauofvrhgoiupafgiaerimsixnqaejifbvuhfgiaeri"
+    >>> print(count_word(seq, "fgiaeri"))
+    6
+    >>> seq="ffgiaerilegycvueogyhceauirgyfgiaeriufgiaeriuyrfghvcburogfgiaeriauofvrhgoiupafgiaerimsixnqaejifbvuhfgiaeri"
+    >>> print(count_word(seq,"sl"))
+    0"""
     word_count=0
     for i in range(len(seq)):
         if seq[i] == word[0]:
             if seq[i:(i+len(word))] == word:
                       word_count+=1
-    return word_count 
+                      
     
-#match_id(r,fasta_file)
+    return word_count 
+
 def match_id(peptide,prot_file):
+    """ A partir d'un fichier de proteine et d'un peptide, 
+    on vas chercher si le peptide est present dans les proteines du fichier, 
+    On cree une liste avec soit toute les proteine ou le petide est present soit None si il y a aucun match.
+
+    >>> peptide = 'BAPTOUAAHEEICTTNEGVMYR'
+    >>> match_id(peptide, 'test_prot.fa')
+    ['None']
+    
+    >>> peptide='SASLESVR'
+    >>> match_id(peptide, 'test_prot.fa')
+    ['MGKNKLLHPSLVLLLLVLLPTDASVSGKPQYMVLVPSLLHTETTEKGCVLLSYLNETVTVSASLESVRGNRSLFTDLEAENDVLHCVAFAVPKSSSNEEVMFLTVQVKGPTQEFKKRTTVMVKNEDSLVFVQTDKSIYKPGQTVKFRVVSMDENFHPLNELIPLVYIQDPKGNRIAQWQSFQLEGGLKQFSFPLSSEPFQGSYKVVVQKAAHEEICTTNEGVMYRKSGGRTEHPFTVEEFVLPKFEVQVTVPKIITILEEEMNVSVCGLYTYGKPVPGHVTVSICRKYSDASDCHGEDSQAFCEKFSGQLNSHGCFYQQVKTKVFQLKRKEYEMKLHTEAQIQEEGTVVELTGRQSSEITRTITKLSFVKVDSHFRQGIPFFGQVRLVDGKGVPIPNKVIFIRGNEANYYSNATTDEHGLVQFSINTTNVMGTSLT']
+    """
+    match_dico = {}
     prot_dico=read_fasta(prot_file)
     list_match = []
     for prot in prot_dico:
@@ -37,23 +72,27 @@ def match_id(peptide,prot_file):
     if list_match == [] :
         list_match.append('None')
     return list_match
-    
+
+
 #unique_match_set(peptide_file, db_file)
 def unique_match_set(peptide_file, prot_file):
+    """ A partir de 2 fichiers, on vas creer un dictionnaire avec : 
+                    clef = Id proteine 
+                    valeur = une/plusieur sequence peptidiques
+        qui suit des regles precise comme : 
+                    la proteine doit etre associer a 2 ou plus sequence peptidiques 
+                    un peptides peut etre associer a 1 seul match 
+                    les sequence non associer ne sont pas presente dans le dictionnaire final
+
+    >>> unique_match_set('test_peptide.fa', 'test_prot.fa')
+    {'sp|P01023|A2MG_HUMAN Alpha-2-macroglobulin OS=Homo sapiens OX=9606 GN=A2M PE=1 SV=3': ['SASLESVR', 'QGIPFFGQ'], 'sp|Q13740|CD166_HUMAN CD166 antigen OS=Homo sapiens OX=9606 GN=ALCAM PE=1 SV=2': ['MESKGASS', 'PDGSPV']}
+    """
     key="None"
     peptide_dico= read_fasta(peptide_file)
-    #print("Dictionnaire read fasta => Peptide : ",peptide_dico)
     prot_dico = read_fasta(prot_file)
-    #print("Dictionnaire read fasta => Proteine : ",prot_dico)
     the_dico = {}
     for peptide in peptide_dico : 
         match = match_id(peptide_dico[peptide],prot_file) 
-        #retourne pour chaque peptide une liste avec toute les proteines ou ce trouve le peptides
-        '''donc pour etre sure que 1 peptides soit associer a une seul proteine, 
-        il suffit de regarder la longeur de la liste,
-        si elle a plus d'un element alors il ne faut pas la prendre en compte'''
-        #print("Liste match_id : \nPeptides : ", peptide, "\n", match)
-        
         for i in range(len(match)): 
             """ ici on vas creer un dictionnaire :
                 clef = Id proteine 
@@ -83,25 +122,27 @@ def unique_match_set(peptide_file, prot_file):
 
             else : 
                 None
-
-    #ENLEVE NONE
-    #grace a la une compréhension de dictionnaire, on vas pouvoir enlever les None 
-    #comme si tu cree un nouveau the_dico mais sans None
-    print("Avant supressions None : \n", the_dico)
     the_dico = {k: v for k, v in the_dico.items() if k != 'None'}
 
-    print("Avant supressions proteine avec moins de deux peptides : \n", the_dico)
-    ##ENLEVE PROT AVEC MOINS DE 2 PEPTIDES 
-    #pareil grace a la comprehension de dictionnaire.
     the_dico = {k: v for k, v in the_dico.items() if len(v) >= 2}
     
-    return the_dico #return le dico trier a la fin
-                    
-##    Fonctions d'overlap    ###
+    return the_dico 
+
 
 #overlap(r1, r2)
 def overlap(first_peptide,second_peptide):
-    #On initialise a 0 
+    """retourne la valeur du chevauchment maximal entre 2 sequences 
+    >>> pep1 = "ATRYTY"
+    >>> pep2 = "YTYAAT"
+    >>> res=overlap(pep1,pep2)
+    >>> print(res)
+    3
+    >>> pep4 = "ATRYTP"
+    >>> pep5 = "YTYAAT"
+    >>> res=overlap(pep4,pep5)
+    >>> print(res)
+    0
+    """
     count = 0
     
     #On compare les extrémitées pour en incrémentant la longeure de 1 
@@ -111,6 +152,8 @@ def overlap(first_peptide,second_peptide):
         if first_peptide[-i:] == second_peptide[:i]: 
             count = i 
     return count
+
+
 #best_overlap(sequence, seq_dico)
 def best_overlap(sequence, seq_dico):
     #La fonction retourne la clé de la séquence qui overlap le mieux
@@ -132,6 +175,12 @@ def best_overlap(sequence, seq_dico):
         return
     else : 
         return best_sequence
+    
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
 
 #stack_peptide(first peptide, second peptide, overlap)
 def stack_peptide(first_peptide, second_peptide, overlap):
@@ -235,6 +284,12 @@ def assembely_peptide(pep_file, overlap_min):
     write_fasta(stacked_dico, 'stacked_pep.fasta')           
     return stacked_dico
 
-#assembely_peptide('test_peptide.fa',1)
-#unique_match_set('test_peptide.fa','test_prot.fa')
+
+import time
+start = time.time()
+a = assembely_peptide('small_peptide_80000.fa',15)
+end = time.time()
+print(end - start)
+
+print(a)
 
