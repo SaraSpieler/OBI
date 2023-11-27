@@ -98,6 +98,8 @@ def unique_match_set(peptide_file, prot_file):
                 clef = Id proteine 
                 valeur = une/plusieur sequence peptidiques """
             if len(match) == 1:
+                '''comme match renvoie une liste avec des proteines, si cette liste est egale a 1 alors il continue 
+                pour etre sur qu'une seul proteine soit associer a un peptides.'''
                 for y ,z  in prot_dico.items(): 
                     ''' recupere l'Id de la proteine '''
                     if z == match[i] :
@@ -123,8 +125,12 @@ def unique_match_set(peptide_file, prot_file):
             else : 
                 None
     the_dico = {k: v for k, v in the_dico.items() if k != 'None'}
+    '''Grace a la comprehension de dictionnaire, on vas créer un dictionnaire sans la clef None
+    pour que les peptides qui ne sont pas associer a des proteines, soit enlever du dictionnaire final'''
 
     the_dico = {k: v for k, v in the_dico.items() if len(v) >= 2}
+    '''Grace a la comprehension de dictionnaire, on vas créer un dictionnaire qui garde que les valeur plus grand que 2 
+    pour qu'on est bien au moins 2 peptides associer a une proteine '''
     
     return the_dico 
 
@@ -144,18 +150,27 @@ def overlap(first_peptide,second_peptide):
     0
     """
     count = 0
-    
-    #On compare les extrémitées pour en incrémentant la longeure de 1 
     for i in range(len(first_peptide)):
-
-        #Si les extrémitées sont égale, on sauvegarde l'indice
         if first_peptide[-i:] == second_peptide[:i]: 
             count = i 
     return count
 
-
 #best_overlap(sequence, seq_dico)
 def best_overlap(sequence, seq_dico):
+    """Cette fonction prend en argument une séquence de référence et un dictionnaire de séquences
+    elle retourne la clé de la séquence qui possede le meilleur overlap avec notre séquence de référence.
+
+    >>> sequence="AAHEEICTTNMESKGASS" #une partie de PAp00000001 et tout PAp00000026
+    >>> seq_dico = read_fasta('test_peptide.fa')
+    >>> res=best_overlap(sequence, seq_dico)
+    >>> print(res)
+    PAp00000026
+    >>> sequence="zvbuihvbfy" #None
+    >>> seq_dico = read_fasta('test_peptide.fa')
+    >>> res=best_overlap(sequence, seq_dico)
+    >>> print(res)
+    None
+    """
     #La fonction retourne la clé de la séquence qui overlap le mieux
     best_overlap = 0 
     for sequences in seq_dico :
@@ -175,21 +190,31 @@ def best_overlap(sequence, seq_dico):
         return
     else : 
         return best_sequence
-    
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+
 
 #stack_peptide(first peptide, second peptide, overlap)
 def stack_peptide(first_peptide, second_peptide, overlap):
-    #Additione les peptides en fonction de l'overlap
+    """Cette fonction aditionne les peptides en fonction de l'overlap elle return
+    le peptide assemblé. Elle teste l'assemblage dans les deux sens du peptide.
+
+    >>> one = 'BAPTOUAAHEEICTTNEGVMYR'
+    >>> two = 'ALPGEQQPLHALTRBAPTOU'
+    >>> res=stack_peptide(one, two, 6)
+    >>> print(res)
+    ALPGEQQPLHALTRBAPTOUAAHEEICTTNEGVMYR
+
+    >>> one = 'BIRUVBI'
+    >>> two = 'OUFIEGSPIHSV'
+    >>> res=stack_peptide(one, two, 0)
+    >>> print(res)
+    None
+      """
 
     if overlap == 0 :
         return 
     
-    #On test le coté de l'overlap et on additione 
     if first_peptide[-overlap:] == second_peptide[:overlap]:
         stacked_peptide = first_peptide[:-overlap]+second_peptide
     else :
@@ -197,99 +222,84 @@ def stack_peptide(first_peptide, second_peptide, overlap):
     
     return stacked_peptide
 
+
 #write_fasta(seq_dico,filename)
 def write_fasta(seq_dico,filename):
-    #Fonction pour écrire un fichier fasta a partir d'un dictionnaire
-    
-    #On commence par créer le fichier a modifier
+    """Cette fonction prend en agrument un dictionnaire et le transforme en fichier fasta
+    elle commence par écrire la clé sur une ligne et la séquence en dessous"""
     new_file = open(filename, 'w')
-    
-    #On parce ce dictionnaire 
+
     for key in seq_dico :
-        #On écrit la clée correspondant a l'ID sur une ligne
         new_file.write((">"+key+'\n'))
-        
-        #On ecrit la séquence sur une autre linge
-        #On ajoute \n tous les 60 lettres pour avoir un fichier lisible (falcutatif) et a la fin
         new_file.write(('\n'.join(seq_dico[key][i:i+60] for i in range(0, len(seq_dico[key]), 60)))+'\n')
     
+
 #assembly_peptides(peptide_file, overlap_min)
 def assembely_peptide(pep_file, overlap_min):
-    #Fonction d'assemblage des peptides 
-    
+    """Cette fonction prend en argument un fichier de peptides et un indice d'overlap minimal 
+
+    >>> res = assembely_peptide('test_peptide.fa',4)
+    >>> print(res)
+    {'PEpNew01': 'ALPGEQQPLHALTRBAPTOUAAHEEICTTNEGVMYR', 'PEpNew02': 'DKLAACLEGNCAEGLGTNYRPTDRDFFLANASR', 'PEpNew03': 'OUIBONJOURCOEURHELLOYES', 'PEpNew04': 'OUIBONJOURCOEURHELLOWORLD'}
+    >>> res = assembely_peptide('test_peptide.fa',6)
+    >>> print(res)
+    {'PEpNew01': 'ALPGEQQPLHALTRBAPTOUAAHEEICTTNEGVMYR', 'PEpNew02': 'OUIBONJOURCOEURHELLO'}
+    >>> res = assembely_peptide('test_peptide.fa',15)
+    >>> print(res)
+    {}
+    """
+
     stacked_dico = {}
     num_name = 1
-    
-    #Ouverture du fichier et transformation en dictionnaire
     peptide_dico = read_fasta(pep_file)
+    """ On vas tester tous les peptides comme base d'assemblage un par un"""
     
-    #On parcours le dico entier pour faire des assemblages avec chaque peptides 
     for peptide_ref in peptide_dico:
-
-        #On ouvre un nouveau dictionnaire afin de servir de banque de peptides. Cela permet de ne pas avoir de doublons.
+        """ On ouvre un nouveau dictionnaire afin de servir de banque de peptides. Cela permet de ne pas avoir de doublons."""
         peptide_dico_bank = read_fasta(pep_file)        
-
-        #On crée la base de notre assemblage 
         stacked = peptide_dico_bank.pop(peptide_ref)
-        
         is_stacked = False
-        
-        
-        # DEBUT DE L'ASSEMBLAGE
-        #On ouvre une boucle qui vas additioner les peptides tant que l'overlap est suffisant
+
+        """DEBUT DE L'ASSEMBLAGE
+        On ouvre une boucle qui vas additioner les peptides tant que l'overlap est suffisant"""
         while True :
-            
             if len(peptide_dico_bank) == 0:
                 break
+            """On trouve le meilleur peptide restant dans notre banque,
+            si il n'y en a pas, on arette la boucle"""
             
-            #On trouve le meilleur peptide dans le dico 
             peptide_candidat = best_overlap(stacked,peptide_dico_bank)
             if peptide_candidat == None :
                 break
+            """On mesure l'overlap entre notre meilleur peptide et notre peptide en cours de construction"""
             
-            #On mesure l'overlap actuel 
             curent_overlap = overlap(stacked,peptide_dico_bank[peptide_candidat])
             curent_overlap_other_side = overlap(peptide_dico_bank[peptide_candidat],stacked)
             if curent_overlap_other_side > curent_overlap :
                 curent_overlap = curent_overlap_other_side
+            """On teste si l'overlap est sufisant pour continuer.
+            Si oui, on additione les peptides et on enleve le peptide de nottre banque 
+            Si non, on arette la boucle et on passe au peptide suivant comme base"""
             
-            #On test si l'overlap est suffisant pour continuer
             if curent_overlap >= overlap_min:
                 is_stacked = True
-                
-                #Si oui, on additione le peptide candidat a notre super peptide
                 stacked = stack_peptide(stacked, peptide_dico_bank[peptide_candidat], curent_overlap)
-                
-                #On oublie pas d'enlever le peptide de notre liste de peptides potentiels
                 peptide_dico_bank.pop(peptide_candidat)
                 
             else :
                 break 
-                
-        ##EXTRACTION DES ASSEMBLAGES
-         
-        #On regarde si on a obetnu un assemblage
+            """Si on a au moins eu un assemblage, on vérifie que le peptide n'est pas déja représenté
+            On génére un nom pour le peptide et on l'ajoute au dictionnaire"""
+            
         if is_stacked:
-    
-            #Si oui, on vérifie que le peptide n'est pas déja représenté
             if stacked not in dict.values(stacked_dico):
                 stacked_dico['PEpNew0'+str(num_name)]=stacked
-                
-                #Cette variable permet de générer des noms pour les peptides
                 num_name+=1 
-                
-   #Ici, on recommence la boucle avec un nouveau peptide        
-        
-    #Finalement on écrit le dictionnaire dans un fichier            
+            """Finalement, on écrit le dctionnaire"""
+            
     write_fasta(stacked_dico, 'stacked_pep.fasta')           
     return stacked_dico
 
-
-import time
-start = time.time()
-a = assembely_peptide('small_peptide_80000.fa',15)
-end = time.time()
-print(end - start)
-
-print(a)
-
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
